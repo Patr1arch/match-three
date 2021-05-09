@@ -18,9 +18,13 @@ namespace TestTaskGF
     public partial class GameWindow : Window
     {
         const int CELLSCOUNT = 8;
+        Random rand;
+
+        enum Figure : int { Triangle = '\u25B2', Square = '\u25A0', Cicle = '\u25CF', Diamond = '\u25C6', Star = '\u2605'}
         public GameWindow()
         {
             InitializeComponent();
+            rand = new Random();
             InitializeCells();          
         }
 
@@ -31,10 +35,11 @@ namespace TestTaskGF
                 for (int j = 0; j < CELLSCOUNT; j++)
                 {
                     var btn = new GameButton();
-                    btn.Content = "\u25A0";
+                    var picture = (Figure)Enum.GetValues(typeof(Figure)).GetValue(rand.Next(0, Enum.GetValues(typeof(Figure)).Length));
+                    btn.Content = (char)picture;
                     btn.Width = 40;
                     btn.Height = 40;
-                    btn.FontSize = 20;
+                    btn.FontSize = 30;
                     Grid.SetRow(btn, i);
                     Grid.SetColumn(btn, j);
                     gameGrid.Children.Add(btn);
