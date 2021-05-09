@@ -36,9 +36,26 @@ namespace TestTaskGF
             {
                 foreach (var pair in CheckLines(i, i))
                 {
-                    gameGrid.Children.Cast<GameButton>()
-                        .First(p => Grid.GetRow(p) == pair.Item1 && Grid.GetColumn(p) == pair.Item2).Background = Brushes.Red;
+                    //SiftDown(pair);
                 }
+            }
+        }
+
+        private void SiftDown(Tuple<int, int> pair)
+        {
+            if (pair.Item1 == 0)
+            {
+                gameGrid.Children.Cast<GameButton>()
+                        .First(p => Grid.GetRow(p) == pair.Item1 && Grid.GetColumn(p) == pair.Item2).CurrentFigure =
+                        (Figure)Enum.GetValues(typeof(Figure)).GetValue(rand.Next(0, Enum.GetValues(typeof(Figure)).Length));
+            }
+            else
+            {
+                gameGrid.Children.Cast<GameButton>()
+                        .First(p => Grid.GetRow(p) == pair.Item1 && Grid.GetColumn(p) == pair.Item2).SwapFigures(
+                    gameGrid.Children.Cast<GameButton>()
+                        .First(p => Grid.GetRow(p) == pair.Item1 - 1 && Grid.GetColumn(p) == pair.Item2));
+                SiftDown(new Tuple<int, int>(pair.Item1 - 1, pair.Item2));
             }
         }
 
@@ -50,7 +67,7 @@ namespace TestTaskGF
                 {
                     var btn = new GameButton();
                     btn.CurrentFigure = (Figure)Enum.GetValues(typeof(Figure)).GetValue(rand.Next(0, Enum.GetValues(typeof(Figure)).Length));
-                    btn.Content = (char)btn.CurrentFigure;
+                    // btn.Content = (char)btn.CurrentFigure;
                     btn.Width = 40;
                     btn.Height = 40;
                     btn.FontSize = 30;
@@ -140,9 +157,26 @@ namespace TestTaskGF
                 {
                     gameGrid.Children.Cast<GameButton>()
                         .First(p => Grid.GetRow(p) == pair.Item1 && Grid.GetColumn(p) == pair.Item2).Background = Brushes.Red;
+                    
                 }
 
             }
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < CELLSCOUNT; i++)
+            {
+                var matchList = CheckLines(i, i);
+                foreach (var pair in matchList)
+                {
+                    SiftDown(pair);
+                }
+                if (matchList.Count > 0)
+                    i = 0;
+
+            }
+
         }
     }
 }
