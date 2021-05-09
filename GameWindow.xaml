@@ -29,6 +29,7 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
         </Grid>
+        <Button Content="Deb" Click="Button_Click_1" HorizontalAlignment="Left" Margin="59,436,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>
