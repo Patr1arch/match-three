@@ -48,18 +48,22 @@ namespace TestTaskGF
         {
             if (pair.Item1 == 0)
             {
-                gameGrid.Children.Cast<GameButton>()
-                        .First(p => Grid.GetRow(p) == pair.Item1 && Grid.GetColumn(p) == pair.Item2).CurrentFigure =
+                GetGameButton(pair).CurrentFigure =
                         (Figure)Enum.GetValues(typeof(Figure)).GetValue(rand.Next(0, Enum.GetValues(typeof(Figure)).Length));
             }
             else
             {
-                gameGrid.Children.Cast<GameButton>()
-                        .First(p => Grid.GetRow(p) == pair.Item1 && Grid.GetColumn(p) == pair.Item2).SwapFigures(
-                    gameGrid.Children.Cast<GameButton>()
-                        .First(p => Grid.GetRow(p) == pair.Item1 - 1 && Grid.GetColumn(p) == pair.Item2));
+                GetGameButton(pair).SwapFigures(
+                    GetGameButton(new Tuple<int, int>(pair.Item1 - 1, pair.Item2)));
                 SiftDown(new Tuple<int, int>(pair.Item1 - 1, pair.Item2));
             }
+        }
+
+        private GameButton GetGameButton(Tuple<int, int> pair)
+        {
+            return pair.Item1 < 0 || pair.Item2 < 0 || pair.Item1 >= CELLSCOUNT || pair.Item2 > CELLSCOUNT ? null :
+                gameGrid.Children.Cast<GameButton>()
+                        .First(p => Grid.GetRow(p) == pair.Item1 && Grid.GetColumn(p) == pair.Item2);
         }
 
         private void InitializeCells()
