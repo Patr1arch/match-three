@@ -21,6 +21,7 @@ namespace TestTaskGF
         const int CELLSCOUNT = 8;
         const int MINMATCHCOUNT = 3;
         Random rand;
+        Tuple<int, int> selectedPos;
 
         public GameWindow()
         {
@@ -31,6 +32,7 @@ namespace TestTaskGF
         private void ConfigureGame()
         {
             rand = new Random();
+            selectedPos = null;
             InitializeCells();
             while (true)
             {
@@ -78,6 +80,7 @@ namespace TestTaskGF
                     btn.Width = 40;
                     btn.Height = 40;
                     btn.FontSize = 30;
+                    // btn.Background = Brushes.White;
                     Grid.SetRow(btn, i);
                     Grid.SetColumn(btn, j);
                     btn.Click += Button_Click;
@@ -88,11 +91,38 @@ namespace TestTaskGF
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            var btn = (GameButton)(sender);
-            int i = Grid.GetRow(btn);
-            int j = Grid.GetColumn(btn);
-            var newBtn = gameGrid.Children.Cast<GameButton>()
-                .First(p => Grid.GetRow(p) == i && Grid.GetColumn(p) == j);
+            //var btn = (GameButton)(sender);
+            //int i = Grid.GetRow(btn);
+            //int j = Grid.GetColumn(btn);
+            //var newBtn = gameGrid.Children.Cast<GameButton>()
+            //    .First(p => Grid.GetRow(p) == i && Grid.GetColumn(p) == j);
+            if (selectedPos == null)
+            {
+                selectedPos = new Tuple<int, int>(Grid.GetRow((GameButton)sender), Grid.GetColumn((GameButton)sender));
+                
+                GetGameButton(selectedPos).IsEnabled = false;
+            }
+            else {
+                if (CheckAdjacent(selectedPos,
+                new Tuple<int, int>(Grid.GetRow((GameButton)sender), Grid.GetColumn((GameButton)sender))))
+                {
+                    debBtn.Content = "Yes";
+                }
+                else
+                {
+                    debBtn.Content = "No";
+                }
+                GetGameButton(selectedPos).IsEnabled = true;
+                selectedPos = null;
+            }
+        }
+
+        private bool CheckAdjacent(Tuple<int, int> firstSelPos, Tuple<int, int> secondSelPos)
+        {
+            return (firstSelPos.Item1 + 1 == secondSelPos.Item1 && firstSelPos.Item2 == secondSelPos.Item2) ||
+                (firstSelPos.Item1 - 1 == secondSelPos.Item1 && firstSelPos.Item2 == secondSelPos.Item2) ||
+                (firstSelPos.Item1 == secondSelPos.Item1 && firstSelPos.Item2 + 1 == secondSelPos.Item2) ||
+                (firstSelPos.Item1 == secondSelPos.Item1 && firstSelPos.Item2 - 1 == secondSelPos.Item2);
         }
 
         private HashSet<Tuple<int, int>> CheckLines(int i, int j)
