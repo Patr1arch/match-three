@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Media;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,6 +29,7 @@ namespace TestTaskGF
         Tuple<int, int> selectedPos;
         int points;
         int timeRemain = STARTTIME;
+        private static SemaphoreSlim slowStuffSemaphore = new SemaphoreSlim(1, 1);
 
 
         public GameWindow()
@@ -96,13 +99,15 @@ namespace TestTaskGF
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
             //var btn = (GameButton)(sender);
             //int i = Grid.GetRow(btn);
             //int j = Grid.GetColumn(btn);
             //var newBtn = gameGrid.Children.Cast<GameButton>()
             //    .First(p => Grid.GetRow(p) == i && Grid.GetColumn(p) == j);
+            if (slowStuffSemaphore.CurrentCount == 0) return;
+            await slowStuffSemaphore.WaitAsync();
             if (selectedPos == null)
             {
                 selectedPos = new Tuple<int, int>(Grid.GetRow((GameButton)sender), Grid.GetColumn((GameButton)sender));
@@ -111,21 +116,17 @@ namespace TestTaskGF
             }
             else {
                 var newSelectedPos = new Tuple<int, int>(Grid.GetRow((GameButton)sender), Grid.GetColumn((GameButton)sender));
+                GetGameButton(selectedPos).IsEnabled = true;
                 if (CheckAdjacent(selectedPos, newSelectedPos))
                 {
-                    debBtn.Content = "Yes";
-                    InteractButtons(newSelectedPos);
-                }
-                else
-                {
-                    debBtn.Content = "No";
-                }
-                GetGameButton(selectedPos).IsEnabled = true;
+                    await InteractButtons(newSelectedPos);
+                }       
                 selectedPos = null;
             }
+            slowStuffSemaphore.Release();
         }
 
-        private async void InteractButtons(Tuple<int, int> newSelectedPos)
+        private async Task InteractButtons(Tuple<int, int> newSelectedPos)
         {
             int newPts = 0;
             GetGameButton(selectedPos).SwapFigures(GetGameButton(newSelectedPos));
@@ -138,11 +139,12 @@ namespace TestTaskGF
                     {
                         GetGameButton(el).Background = Brushes.Red;
                     }
-                    await Task.Delay(1000);
+                    SystemSounds.Beep.Play();
+                    await Task.Delay(500);
                     foreach (var el in matchCoords)
                     {
                         GetGameButton(el).Background = Brushes.Bisque;
-                        SiftDown(el);                 
+                        SiftDown(el);
                         newPts++;
                     }
                     matchCoords = CheckAllLines();
@@ -151,7 +153,9 @@ namespace TestTaskGF
                 ptsLabel.Content = "Points: " + points.ToString();
             }
             else
+            {
                 GetGameButton(selectedPos).SwapFigures(GetGameButton(newSelectedPos));
+            }
         }
 
         private bool CheckAdjacent(Tuple<int, int> firstSelPos, Tuple<int, int> secondSelPos)
@@ -234,36 +238,6 @@ namespace TestTaskGF
         private void GameWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Owner.Visibility = Visibility.Visible;
-        }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            for (int i = 0; i < CELLSCOUNT; i++)
-            {
-                foreach (var pair in CheckLines(i, i))
-                {
-                    gameGrid.Children.Cast<GameButton>()
-                        .First(p => Grid.GetRow(p) == pair.Item1 && Grid.GetColumn(p) == pair.Item2).Background = Brushes.Red;
-                    
-                }
-
-            }
-        }
-
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            while (true)
-            {
-                var matchList = CheckAllLines();
-                foreach (var pair in matchList)
-                {
-                    SiftDown(pair);
-                }
-                if (matchList.Count ==  0)
-                    break;
-            }
-
-
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)

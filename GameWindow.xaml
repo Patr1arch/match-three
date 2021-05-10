@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="Game Window" Height="500" Width="500" Closing="GameWindow_Closing" Loaded="Window_Loaded">
     <Grid>
-        
+
         <Grid x:Name="gameGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Width="350" Height="350">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -30,8 +30,6 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
         </Grid>
-        <Button Content="Deb" Click="Button_Click_1" HorizontalAlignment="Left" Margin="59,436,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="debBtn" Content="Button" Click="Button_Click_2"  HorizontalAlignment="Left" Margin="206,456,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.65,-0.603"/>
         <Label x:Name="ptsLabel" Margin="10" Content="Points: 0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="25"/>
         <Label x:Name="timeLabel" Content="Time remaining: 60" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="25" Margin="10"/>
 
