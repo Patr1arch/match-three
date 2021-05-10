@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace TestTaskGF
 {
@@ -21,9 +22,12 @@ namespace TestTaskGF
     {
         const int CELLSCOUNT = 8;
         const int MINMATCHCOUNT = 3;
+        const int STARTTIME = 60;
         Random rand;
         Tuple<int, int> selectedPos;
         int points;
+        int timeRemain = STARTTIME;
+
 
         public GameWindow()
         {
@@ -260,6 +264,24 @@ namespace TestTaskGF
             }
 
 
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            DispatcherTimer dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += new EventHandler(DispatcherTimer_Tick);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            dispatcherTimer.Start();
+        }
+
+        private void DispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            if (timeRemain == 0)
+            {
+                MessageBox.Show("Game over!", "Game Over");
+                Close();
+            }
+            timeLabel.Content = "Time remaining: " + timeRemain--.ToString();
         }
     }
 }
