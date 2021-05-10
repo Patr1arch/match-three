@@ -32,12 +32,15 @@ namespace TestTaskGF
         {
             rand = new Random();
             InitializeCells();
-            for (int i = 0; i < CELLSCOUNT; i++)
+            while (true)
             {
-                foreach (var pair in CheckLines(i, i))
+                var matchList = CheckAllLines();
+                foreach (var pair in matchList)
                 {
-                    //SiftDown(pair);
+                    SiftDown(pair);
                 }
+                if (matchList.Count == 0)
+                    break;
             }
         }
 
@@ -144,6 +147,19 @@ namespace TestTaskGF
             return matchCoords;
         }
 
+        private HashSet<Tuple<int, int>> CheckAllLines()
+        {
+            HashSet<Tuple<int, int>> matchCoords = new HashSet<Tuple<int, int>>();
+            for (int i = 0; i < CELLSCOUNT; i++)
+            {
+                foreach(var el in CheckLines(i, i))
+                {
+                    matchCoords.Add(el);
+                }
+            }
+            return matchCoords;
+        }
+
         private void GameWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Owner.Visibility = Visibility.Visible;
@@ -165,17 +181,17 @@ namespace TestTaskGF
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < CELLSCOUNT; i++)
+            while (true)
             {
-                var matchList = CheckLines(i, i);
+                var matchList = CheckAllLines();
                 foreach (var pair in matchList)
                 {
                     SiftDown(pair);
                 }
-                if (matchList.Count > 0)
-                    i = 0;
-
+                if (matchList.Count ==  0)
+                    break;
             }
+
 
         }
     }
