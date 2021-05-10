@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -22,6 +23,7 @@ namespace TestTaskGF
         const int MINMATCHCOUNT = 3;
         Random rand;
         Tuple<int, int> selectedPos;
+        int points;
 
         public GameWindow()
         {
@@ -33,6 +35,7 @@ namespace TestTaskGF
         {
             rand = new Random();
             selectedPos = null;
+            points = 0;
             InitializeCells();
             while (true)
             {
@@ -80,7 +83,7 @@ namespace TestTaskGF
                     btn.Width = 40;
                     btn.Height = 40;
                     btn.FontSize = 30;
-                    // btn.Background = Brushes.White;
+                    btn.Background = Brushes.Bisque;
                     Grid.SetRow(btn, i);
                     Grid.SetColumn(btn, j);
                     btn.Click += Button_Click;
@@ -103,10 +106,11 @@ namespace TestTaskGF
                 GetGameButton(selectedPos).IsEnabled = false;
             }
             else {
-                if (CheckAdjacent(selectedPos,
-                new Tuple<int, int>(Grid.GetRow((GameButton)sender), Grid.GetColumn((GameButton)sender))))
+                var newSelectedPos = new Tuple<int, int>(Grid.GetRow((GameButton)sender), Grid.GetColumn((GameButton)sender));
+                if (CheckAdjacent(selectedPos, newSelectedPos))
                 {
                     debBtn.Content = "Yes";
+                    InteractButtons(newSelectedPos);
                 }
                 else
                 {
@@ -115,6 +119,35 @@ namespace TestTaskGF
                 GetGameButton(selectedPos).IsEnabled = true;
                 selectedPos = null;
             }
+        }
+
+        private async void InteractButtons(Tuple<int, int> newSelectedPos)
+        {
+            int newPts = 0;
+            GetGameButton(selectedPos).SwapFigures(GetGameButton(newSelectedPos));
+            var matchCoords = CheckAllLines();
+            if (matchCoords.Count > 0)
+            {
+                while (matchCoords.Count > 0)
+                {
+                    foreach (var el in matchCoords)
+                    {
+                        GetGameButton(el).Background = Brushes.Red;
+                    }
+                    await Task.Delay(1000);
+                    foreach (var el in matchCoords)
+                    {
+                        GetGameButton(el).Background = Brushes.Bisque;
+                        SiftDown(el);                 
+                        newPts++;
+                    }
+                    matchCoords = CheckAllLines();
+                }
+                points += newPts;
+                ptsLabel.Content = "Points: " + points.ToString();
+            }
+            else
+                GetGameButton(selectedPos).SwapFigures(GetGameButton(newSelectedPos));
         }
 
         private bool CheckAdjacent(Tuple<int, int> firstSelPos, Tuple<int, int> secondSelPos)
