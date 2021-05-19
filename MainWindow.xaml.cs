@@ -32,5 +32,13 @@ namespace TestTaskGF
             gameWindow.Owner = this;
             gameWindow.Show();
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            LeaderboardWindow leaderboardWindow = new LeaderboardWindow();
+            this.Visibility = Visibility.Collapsed;
+            leaderboardWindow.Owner = this;
+            leaderboardWindow.Show();
+        }
     }
 }
