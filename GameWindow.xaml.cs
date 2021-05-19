@@ -24,12 +24,14 @@ namespace TestTaskGF
     {
         const int CELLSCOUNT = 8;
         const int MINMATCHCOUNT = 3;
-        const int STARTTIME = 60;
+        const int STARTTIME = 3;
+        const int MAXNICKNAMELENGTH = 16;
         Random rand;
         Tuple<int, int> selectedPos;
         int points;
         int timeRemain = STARTTIME;
         private static SemaphoreSlim slowStuffSemaphore = new SemaphoreSlim(1, 1);
+        DispatcherTimer dispatcherTimer;
 
 
         public GameWindow()
@@ -242,7 +244,7 @@ namespace TestTaskGF
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            DispatcherTimer dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(DispatcherTimer_Tick);
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             dispatcherTimer.Start();
@@ -252,10 +254,27 @@ namespace TestTaskGF
         {
             if (timeRemain == 0)
             {
-                MessageBox.Show("Game over!", "Game Over");
-                Close();
+                dispatcherTimer.Stop();
+                inputBox.Visibility = System.Windows.Visibility.Visible;
+                //InputBox.Show("Game over!", "Game Over");
+                //Close();
             }
             timeLabel.Content = "Time remaining: " + timeRemain--.ToString();
+        }
+
+        private void okButton_Click(object sender, RoutedEventArgs e)
+        {
+            inputBox.Visibility = System.Windows.Visibility.Collapsed;
+            Close();
+        }
+
+        private void inputTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (inputTextBox.Text.Length >= MAXNICKNAMELENGTH)
+            {
+                inputTextBox.Text = inputTextBox.Text.Substring(0, MAXNICKNAMELENGTH);
+                inputTextBox.SelectionStart = inputTextBox.Text.Length;
+            }
         }
     }
 }

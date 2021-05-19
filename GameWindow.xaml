@@ -31,7 +31,25 @@
             </Grid.RowDefinitions>
         </Grid>
         <Label x:Name="ptsLabel" Margin="10" Content="Points: 0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="25"/>
-        <Label x:Name="timeLabel" Content="Time remaining: 60" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="25" Margin="10"/>
+        <Label x:Name="timeLabel" Content="Time remaining: " HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="25" Margin="10"/>
 
+        <Grid x:Name="inputBox" Visibility="Collapsed">
+            <Grid Background="Black" Opacity="0.5"/>
+            <Border
+            MinWidth="250"
+            Background="Orange" 
+            BorderBrush="Black" 
+            BorderThickness="1" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center">
+                <StackPanel>
+                    <TextBlock Margin="5" Text="Game over! Input your name: " />
+                    <TextBox MinWidth="150" HorizontalAlignment="Center" VerticalAlignment="Center" TextChanged="inputTextBox_TextChanged" x:Name="inputTextBox"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <Button x:Name="okButton" Margin="5" Content="Yes" Width="50" Click="okButton_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Window>
