@@ -14,6 +14,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.IO;
+using TestTaskGF.Models;
 
 namespace TestTaskGF
 {
@@ -265,6 +269,11 @@ namespace TestTaskGF
         private void okButton_Click(object sender, RoutedEventArgs e)
         {
             inputBox.Visibility = System.Windows.Visibility.Collapsed;
+
+            Player _data = new Player(inputTextBox.Text, points);
+            string json = JsonSerializer.Serialize(_data);
+            File.AppendAllText(Environment.CurrentDirectory.ToString() + "/leaderboard.json", json);
+
             Close();
         }
 
