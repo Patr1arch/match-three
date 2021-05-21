@@ -53,23 +53,18 @@ namespace TestTaskGF
             SetValuesForLeaderboard();
             foreach (var el in playerPtsList)
             {
-                var playerPtsCont = new StackPanel();
-                playerPtsCont.Orientation = Orientation.Horizontal;
-                playerPtsCont.HorizontalAlignment = HorizontalAlignment.Center;
 
                 var nameLabel = new Label();
                 nameLabel.Content = el.Item1;
                 nameLabel.FontSize = 30;
-                nameLabel.Margin = new Thickness(30, 0, 30, 0);
-                playerPtsCont.Children.Add(nameLabel);
+                //nameLabel.Margin = new Thickness(0, 0, 40, 0);
+                leaderboardNamesContainer.Children.Add(nameLabel);
 
                 var scoreLabel = new Label();
                 scoreLabel.Content = el.Item2;
                 scoreLabel.FontSize = 30;
-                scoreLabel.Margin = new Thickness(30, 0, 30, 0);
-                playerPtsCont.Children.Add(scoreLabel);
-
-                leaderboardContainer.Children.Add(playerPtsCont);
+                //scoreLabel.Margin = new Thickness(50, 0, 0, 0);
+                leaderboardPointsContainer.Children.Add(scoreLabel);
             }
         }
     }
