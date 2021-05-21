@@ -28,7 +28,7 @@ namespace TestTaskGF
     {
         const int CELLSCOUNT = 8;
         const int MINMATCHCOUNT = 3;
-        const int STARTTIME = 3;
+        const int STARTTIME = 60;
         const int MAXNICKNAMELENGTH = 16;
         Random rand;
         Tuple<int, int> selectedPos;
@@ -269,10 +269,17 @@ namespace TestTaskGF
         private void okButton_Click(object sender, RoutedEventArgs e)
         {
             inputBox.Visibility = System.Windows.Visibility.Collapsed;
+            var path = Environment.CurrentDirectory.ToString() + "/leaderboard.json";
 
-            Player _data = new Player(inputTextBox.Text, points);
-            string json = JsonSerializer.Serialize(_data);
-            File.AppendAllText(Environment.CurrentDirectory.ToString() + "/leaderboard.json", json);
+            if (!File.Exists(path))
+            {
+                File.WriteAllText(path, "[]");
+            }
+            string json = File.ReadAllText(path);
+            var data = JsonSerializer.Deserialize<List<Player>>(json);
+            data.Add(new Player(inputTextBox.Text, points));
+            json = JsonSerializer.Serialize(data);
+            File.WriteAllText(path, json);
 
             Close();
         }

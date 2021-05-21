@@ -14,5 +14,10 @@ namespace TestTaskGF.Models
             Name = _name;
             Points = _pts;
         }
+
+        public Player()
+        {
+
+        }
     }
 }

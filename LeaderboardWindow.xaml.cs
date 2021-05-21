@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -9,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using TestTaskGF.Models;
 
 namespace TestTaskGF
 {
@@ -18,8 +21,7 @@ namespace TestTaskGF
     public partial class LeaderboardWindow : Window
     {
         List<(string, int)> playerPtsList;
-        const int playersCount = 100;
-        const string lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+        const int MAXTOPPLAYERS = 10;
         public LeaderboardWindow()
         {
             InitializeComponent();
@@ -31,17 +33,24 @@ namespace TestTaskGF
             Owner.Visibility = Visibility.Visible;
         }
 
-        private void SetValues(int count)
+        private void SetValuesForLeaderboard()
         {
-            for (int i = 0; i < count; i++)
+            var path = Environment.CurrentDirectory.ToString() + "/leaderboard.json";
+            if (!File.Exists(path))
+                File.WriteAllText(path, "[]");
+            string json = File.ReadAllText(path);
+            var players = JsonSerializer.Deserialize<List<Player>>(json);
+
+            players.Sort((x, y) => y.Points.CompareTo(x.Points));
+            for (int i = 0; i < (players.Count > MAXTOPPLAYERS ? MAXTOPPLAYERS : players.Count); i++)
             {
-                playerPtsList.Add(($"Player {i} {lorem}", i));
-            }
+                playerPtsList.Add(($"Player {players[i].Name}", players[i].Points));
+            } 
         }
 
         private void LeaderboardWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            SetValues(playersCount);
+            SetValuesForLeaderboard();
             foreach (var el in playerPtsList)
             {
                 var playerPtsCont = new StackPanel();
