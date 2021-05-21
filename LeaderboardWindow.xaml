@@ -7,8 +7,12 @@
         mc:Ignorable="d"
         Title="LeaderboardWindow" Closing="LeaderboardWindow_Closing" Loaded="LeaderboardWindow_Loaded" Height="450" Width="800">
     <Grid>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <StackPanel x:Name="leaderboardContainer" Orientation="Vertical" Margin="100 50"/>
+        <StackPanel Orientation="Horizontal" Margin="10" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <Label Content="Player Name" FontSize="30" Margin="30 0 30 0"></Label>
+            <Label Content="Points" FontSize="30" Margin="30 0 30 0"></Label>
+        </StackPanel>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="0 60 0 0">
+            <StackPanel x:Name="leaderboardContainer" Orientation="Vertical" />
         </ScrollViewer>
 
     </Grid>

@@ -44,7 +44,7 @@ namespace TestTaskGF
             players.Sort((x, y) => y.Points.CompareTo(x.Points));
             for (int i = 0; i < (players.Count > MAXTOPPLAYERS ? MAXTOPPLAYERS : players.Count); i++)
             {
-                playerPtsList.Add(($"Player {players[i].Name}", players[i].Points));
+                playerPtsList.Add((players[i].Name, players[i].Points));
             } 
         }
 
