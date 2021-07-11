@@ -192,9 +192,10 @@ namespace TestTaskGF
         {
             HashSet<Tuple<int, int, int>> matchCoords = new HashSet<Tuple<int, int, int>>();
             HashSet<Tuple<int, int>> tempMatchCoords = new HashSet<Tuple<int, int>>();
-            for (int colJ = 0; colJ < CELLSCOUNT - 1; colJ++)
+            for (int colJ = 0; colJ < CELLSCOUNT; colJ++)
             {
-                if (gameGrid.Children.Cast<GameButton>().First(p => Grid.GetRow(p) == i && Grid.GetColumn(p) == colJ).CurrentFigure.Item2 ==
+                if (colJ != CELLSCOUNT - 1 &&
+                    gameGrid.Children.Cast<GameButton>().First(p => Grid.GetRow(p) == i && Grid.GetColumn(p) == colJ).CurrentFigure.Item2 ==
                     gameGrid.Children.Cast<GameButton>().First(p => Grid.GetRow(p) == i && Grid.GetColumn(p) == colJ + 1).CurrentFigure.Item2)
                 {
                     if (tempMatchCoords.Count == 0)
@@ -245,50 +246,11 @@ namespace TestTaskGF
                 }
                 else tempMatchCoords.Clear();
             }
-            if (tempMatchCoords.Count >= MINMATCHCOUNT)
-            {
-                if (tempMatchCoords.Any(p => GetGameButton(p).CurrentFigure.Item1 == Figure.F6GorLine))
-                {
-                    var lineEl = tempMatchCoords.First
-                        (p => GetGameButton(p).CurrentFigure.Item1 == Figure.F6GorLine);
-                    for (int k = 0; k < CELLSCOUNT; k++)
-                    {
-                        matchCoords.Add(new Tuple<int, int, int>(lineEl.Item1, k, 0));
-                    }
-                }
-                if (tempMatchCoords.Any(p => GetGameButton(p).CurrentFigure.Item1 == Figure.F7VerLine))
-                {
-                    var colEl = tempMatchCoords.First
-                        (p => GetGameButton(p).CurrentFigure.Item1 == Figure.F7VerLine);
-                    for (int k = 0; k < CELLSCOUNT; k++)
-                    {
-                        matchCoords.Add(new Tuple<int, int, int>(k, colEl.Item2, 0));
-                    }
-                }
-                if (tempMatchCoords.Count == MATCHCOUNTFORLINE)
-                {
-                    if (tempMatchCoords.Contains(newSelectedPos))
-                    {
-                        matchCoords.Add(new Tuple<int, int, int>(newSelectedPos.Item1, newSelectedPos.Item2,
-                            (int) Figure.F6GorLine));
-                        tempMatchCoords.Remove(newSelectedPos);
-                    }
-                    else
-                    {
-                        var el = tempMatchCoords.ToArray()[tempMatchCoords.Count - 1];
-                        matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2,
-                            (int) Figure.F6GorLine));
-                        tempMatchCoords.Remove(el);
-                    }
-                }
-                foreach (var el in tempMatchCoords)
-                    matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2, 0));
-                tempMatchCoords.Clear();
-            }
             tempMatchCoords.Clear();
-            for (int rowI = 0; rowI < CELLSCOUNT - 1; rowI++)
+            for (int rowI = 0; rowI < CELLSCOUNT; rowI++)
             {
-                if (gameGrid.Children.Cast<GameButton>().First(p => Grid.GetRow(p) == rowI && Grid.GetColumn(p) == j).CurrentFigure.Item2 ==
+                if (rowI != CELLSCOUNT - 1 &&
+                    gameGrid.Children.Cast<GameButton>().First(p => Grid.GetRow(p) == rowI && Grid.GetColumn(p) == j).CurrentFigure.Item2 ==
                     gameGrid.Children.Cast<GameButton>().First(p => Grid.GetRow(p) == rowI + 1 && Grid.GetColumn(p) == j).CurrentFigure.Item2)
                 {
                     if (tempMatchCoords.Count == 0)
@@ -338,45 +300,6 @@ namespace TestTaskGF
                     tempMatchCoords.Clear();
                 }
                 else tempMatchCoords.Clear();
-            }
-            if (tempMatchCoords.Count >= MINMATCHCOUNT)
-            {
-                if (tempMatchCoords.Any(p => GetGameButton(p).CurrentFigure.Item1 == Figure.F6GorLine))
-                {
-                    var lineEl = tempMatchCoords.First
-                        (p => GetGameButton(p).CurrentFigure.Item1 == Figure.F6GorLine);
-                    for (int k = 0; k < CELLSCOUNT; k++)
-                    {
-                        matchCoords.Add(new Tuple<int, int, int>(lineEl.Item1, k, 0));
-                    }
-                }
-                if (tempMatchCoords.Any(p => GetGameButton(p).CurrentFigure.Item1 == Figure.F7VerLine))
-                {
-                    var colEl = tempMatchCoords.First
-                        (p => GetGameButton(p).CurrentFigure.Item1 == Figure.F7VerLine);
-                    for (int k = 0; k < CELLSCOUNT; k++)
-                    {
-                        matchCoords.Add(new Tuple<int, int, int>(k, colEl.Item2, 0));
-                    }
-                }
-                if (tempMatchCoords.Count == MATCHCOUNTFORLINE)
-                {
-                    if (tempMatchCoords.Contains(newSelectedPos))
-                    {
-                        matchCoords.Add(new Tuple<int, int, int>(newSelectedPos.Item1, newSelectedPos.Item2,
-                            (int) Figure.F7VerLine));
-                        tempMatchCoords.Remove(newSelectedPos);
-                    }
-                    else
-                    {
-                        var el = tempMatchCoords.ToArray()[tempMatchCoords.Count - 1];
-                        matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2,
-                            (int) Figure.F7VerLine));
-                        tempMatchCoords.Remove(el);
-                    }
-                }
-                foreach (var el in tempMatchCoords)
-                    matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2, 0));
             }
             return matchCoords;
         }
