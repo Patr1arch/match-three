@@ -28,7 +28,8 @@ namespace TestTaskGF
     {
         const int CELLSCOUNT = 8;
         const int MINMATCHCOUNT = 3;
-        const int STARTTIME = 60;
+        private const int MATCHCOUNTFORLINE = 4;
+        const int STARTTIME = 600;
         const int MAXNICKNAMELENGTH = 16;
         Random rand;
         Tuple<int, int> selectedPos;
@@ -53,9 +54,9 @@ namespace TestTaskGF
             while (true)
             {
                 var matchList = CheckAllLines();
-                foreach (var pair in matchList)
+                foreach (var triple in matchList)
                 {
-                    SiftDown(pair);
+                    SiftDown(new Tuple<int, int>(triple.Item1, triple.Item2));
                 }
                 if (matchList.Count == 0)
                     break;
@@ -80,7 +81,7 @@ namespace TestTaskGF
 
         private (Figure, FigureColor) CreateFigure(int figureIndex, int colorIndex)
         {
-            return ((Figure)Enum.GetValues(typeof(Figure)).GetValue(figureIndex),
+            return (Enum.GetValues(typeof(Figure)).Cast<Figure>().ToArray().OrderBy(l => l.ToString()).ToArray()[figureIndex],
                 (FigureColor)Enum.GetValues(typeof(FigureColor)).GetValue(colorIndex));
         }
 
@@ -144,21 +145,28 @@ namespace TestTaskGF
         {
             int newPts = 0;
             GetGameButton(selectedPos).SwapFigures(GetGameButton(newSelectedPos));
-            var matchCoords = CheckAllLines();
+            var matchCoords = CheckAllLines(newSelectedPos);
             if (matchCoords.Count > 0)
             {
                 while (matchCoords.Count > 0)
                 {
                     foreach (var el in matchCoords)
                     {
-                        GetGameButton(el).Background = Brushes.Red;
+                        GetGameButton(new Tuple<int, int>(el.Item1, el.Item2)).Background = Brushes.Red;
                     }
                     SystemSounds.Beep.Play();
-                    await Task.Delay(500);
+                    await Task.Delay(2000);
                     foreach (var el in matchCoords)
                     {
-                        GetGameButton(el).Background = Brushes.Bisque;
-                        SiftDown(el);
+                        GetGameButton(new Tuple<int, int>(el.Item1, el.Item2)).Background = Brushes.Bisque;
+                        if (el.Item3 != 0)
+                        {
+                            GetGameButton(new Tuple<int, int>(el.Item1, el.Item2)).CurrentFigure =
+                                ((Figure) el.Item3,
+                                    GetGameButton(new Tuple<int, int>(el.Item1, el.Item2)).CurrentFigure.Item2);
+                        }
+                        else
+                            SiftDown(new Tuple<int, int>(el.Item1, el.Item2));
                         newPts++;
                     }
                     matchCoords = CheckAllLines();
@@ -180,9 +188,9 @@ namespace TestTaskGF
                 (firstSelPos.Item1 == secondSelPos.Item1 && firstSelPos.Item2 - 1 == secondSelPos.Item2);
         }
 
-        private HashSet<Tuple<int, int>> CheckLines(int i, int j)
+        private HashSet<Tuple<int, int, int>> CheckLines(int i, int j, Tuple<int, int> newSelectedPos = null)
         {
-            HashSet<Tuple<int, int>> matchCoords = new HashSet<Tuple<int, int>>();
+            HashSet<Tuple<int, int, int>> matchCoords = new HashSet<Tuple<int, int, int>>();
             HashSet<Tuple<int, int>> tempMatchCoords = new HashSet<Tuple<int, int>>();
             for (int colJ = 0; colJ < CELLSCOUNT - 1; colJ++)
             {
@@ -197,16 +205,49 @@ namespace TestTaskGF
                 }
                 else if (tempMatchCoords.Count >= MINMATCHCOUNT)
                 {
+                    if (tempMatchCoords.Count == MATCHCOUNTFORLINE)
+                    {
+                        if (tempMatchCoords.Contains(newSelectedPos))
+                        {
+                            matchCoords.Add(new Tuple<int, int, int>(newSelectedPos.Item1, newSelectedPos.Item2,
+                                (int) Figure.F6GorLine));
+                            tempMatchCoords.Remove(newSelectedPos);
+                        }
+                        else
+                        {
+                            var el = tempMatchCoords.ToArray()[tempMatchCoords.Count - 1];
+                            matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2,
+                                (int) Figure.F6GorLine));
+                            tempMatchCoords.Remove(el);
+                        }
+                    }
                     foreach (var el in tempMatchCoords)
-                        matchCoords.Add(el);
+                        matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2, 0));
                     tempMatchCoords.Clear();
                 }
                 else tempMatchCoords.Clear();
             }
             if (tempMatchCoords.Count >= MINMATCHCOUNT)
             {
+                if (tempMatchCoords.Count == MATCHCOUNTFORLINE)
+                {
+                    if (tempMatchCoords.Contains(newSelectedPos))
+                    {
+                        matchCoords.Add(new Tuple<int, int, int>(newSelectedPos.Item1, newSelectedPos.Item2,
+                            (int) Figure.F6GorLine));
+                        tempMatchCoords.Remove(newSelectedPos);
+                    }
+                    else
+                    {
+                        var el = tempMatchCoords.ToArray()[tempMatchCoords.Count - 1];
+                        matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2,
+                            (int) Figure.F6GorLine));
+                        tempMatchCoords.Remove(el);
+                    }
+                }
                 foreach (var el in tempMatchCoords)
-                    matchCoords.Add(el);
+                    matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2, 0));
+                tempMatchCoords.Clear();
             }
             tempMatchCoords.Clear();
             for (int rowI = 0; rowI < CELLSCOUNT - 1; rowI++)
@@ -222,26 +263,58 @@ namespace TestTaskGF
                 }
                 else if (tempMatchCoords.Count >= MINMATCHCOUNT)
                 {
+                    if (tempMatchCoords.Count == MATCHCOUNTFORLINE)
+                    {
+                        if (tempMatchCoords.Contains(newSelectedPos))
+                        {
+                            matchCoords.Add(new Tuple<int, int, int>(newSelectedPos.Item1, newSelectedPos.Item2,
+                                (int) Figure.F7VerLine));
+                            tempMatchCoords.Remove(newSelectedPos);
+                        }
+                        else
+                        {
+                            var el = tempMatchCoords.ToArray()[tempMatchCoords.Count - 1];
+                            matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2,
+                                (int) Figure.F7VerLine));
+                            tempMatchCoords.Remove(el);
+                        }
+                    }
                     foreach (var el in tempMatchCoords)
-                        matchCoords.Add(el);
+                        matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2, 0));
                     tempMatchCoords.Clear();
                 }
                 else tempMatchCoords.Clear();
             }
             if (tempMatchCoords.Count >= MINMATCHCOUNT)
             {
+                if (tempMatchCoords.Count == MATCHCOUNTFORLINE)
+                {
+                    if (tempMatchCoords.Contains(newSelectedPos))
+                    {
+                        matchCoords.Add(new Tuple<int, int, int>(newSelectedPos.Item1, newSelectedPos.Item2,
+                            (int) Figure.F7VerLine));
+                        tempMatchCoords.Remove(newSelectedPos);
+                    }
+                    else
+                    {
+                        var el = tempMatchCoords.ToArray()[tempMatchCoords.Count - 1];
+                        matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2,
+                            (int) Figure.F7VerLine));
+                        tempMatchCoords.Remove(el);
+                    }
+                }
                 foreach (var el in tempMatchCoords)
-                    matchCoords.Add(el);
+                    matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2, 0));
             }
             return matchCoords;
         }
 
-        private HashSet<Tuple<int, int>> CheckAllLines()
+        private HashSet<Tuple<int, int, int>> CheckAllLines(Tuple<int, int> newSelectedPos = null)
         {
-            HashSet<Tuple<int, int>> matchCoords = new HashSet<Tuple<int, int>>();
+            HashSet<Tuple<int, int, int>> matchCoords = new HashSet<Tuple<int, int, int>>();
             for (int i = 0; i < CELLSCOUNT; i++)
             {
-                foreach(var el in CheckLines(i, i))
+                foreach(var el in CheckLines(i, i, newSelectedPos))
                 {
                     matchCoords.Add(el);
                 }

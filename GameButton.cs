@@ -8,13 +8,22 @@ namespace TestTaskGF
 {
     public enum FigureColor
     {
-        Blue = -16776961,
-        Black = -16777216,
-        Pink = -2461482,
-        Orange = -23296,
-        Green = -16744448
+        Black =  -16777216,
+        Blue =   -16776961,
+        Green =  -16744448,
+        Pink =   -2461482,
+        Orange = -23296
     }
-    public enum Figure : int { Triangle = '\u25B2', Square = '\u25A0', Cicle = '\u25CF', Diamond = '\u25C6', Star = '\u2605' }
+    public enum Figure : int 
+    {
+        F1Square = '\u25A0',
+        F2Triangle = '\u25B2',
+        F3Diamond = '\u25C6',
+        F4Cicle = '\u25CF',
+        F5Star = '\u2605',
+        F6GorLine = '\u2583',
+        F7VerLine = '\u258D'
+    }
     class GameButton : Button
     {
         private (Figure, FigureColor) currFigure;
