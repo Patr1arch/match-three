@@ -66,8 +66,9 @@ namespace TestTaskGF
         {
             if (pair.Item1 == 0)
             {
-                GetGameButton(pair).CurrentFigure =
-                        (Figure)Enum.GetValues(typeof(Figure)).GetValue(rand.Next(0, Enum.GetValues(typeof(Figure)).Length));
+                var index = rand.Next(0, Enum.GetValues(typeof(FigureColor)).Length);
+                GetGameButton(pair).CurrentFigure = CreateFigure(index, index);
+                //(Figure)Enum.GetValues(typeof(Figure)).GetValue(rand.Next(0, Enum.GetValues(typeof(Figure)).Length));
             }
             else
             {
@@ -75,6 +76,12 @@ namespace TestTaskGF
                     GetGameButton(new Tuple<int, int>(pair.Item1 - 1, pair.Item2)));
                 SiftDown(new Tuple<int, int>(pair.Item1 - 1, pair.Item2));
             }
+        }
+
+        private (Figure, FigureColor) CreateFigure(int figureIndex, int colorIndex)
+        {
+            return ((Figure)Enum.GetValues(typeof(Figure)).GetValue(figureIndex),
+                (FigureColor)Enum.GetValues(typeof(FigureColor)).GetValue(colorIndex));
         }
 
         private GameButton GetGameButton(Tuple<int, int> pair)
@@ -91,7 +98,8 @@ namespace TestTaskGF
                 for (int j = 0; j < CELLSCOUNT; j++)
                 {
                     var btn = new GameButton();
-                    btn.CurrentFigure = (Figure)Enum.GetValues(typeof(Figure)).GetValue(rand.Next(0, Enum.GetValues(typeof(Figure)).Length));
+                    var index = rand.Next(0, Enum.GetValues(typeof(FigureColor)).Length);
+                    btn.CurrentFigure = CreateFigure(index, index);
                     // btn.Content = (char)btn.CurrentFigure;
                     btn.Width = 40;
                     btn.Height = 40;
@@ -178,8 +186,8 @@ namespace TestTaskGF
             HashSet<Tuple<int, int>> tempMatchCoords = new HashSet<Tuple<int, int>>();
             for (int colJ = 0; colJ < CELLSCOUNT - 1; colJ++)
             {
-                if (gameGrid.Children.Cast<GameButton>().First(p => Grid.GetRow(p) == i && Grid.GetColumn(p) == colJ).CurrentFigure ==
-                    gameGrid.Children.Cast<GameButton>().First(p => Grid.GetRow(p) == i && Grid.GetColumn(p) == colJ + 1).CurrentFigure)
+                if (gameGrid.Children.Cast<GameButton>().First(p => Grid.GetRow(p) == i && Grid.GetColumn(p) == colJ).CurrentFigure.Item2 ==
+                    gameGrid.Children.Cast<GameButton>().First(p => Grid.GetRow(p) == i && Grid.GetColumn(p) == colJ + 1).CurrentFigure.Item2)
                 {
                     if (tempMatchCoords.Count == 0)
                     {
@@ -203,8 +211,8 @@ namespace TestTaskGF
             tempMatchCoords.Clear();
             for (int rowI = 0; rowI < CELLSCOUNT - 1; rowI++)
             {
-                if (gameGrid.Children.Cast<GameButton>().First(p => Grid.GetRow(p) == rowI && Grid.GetColumn(p) == j).CurrentFigure ==
-                    gameGrid.Children.Cast<GameButton>().First(p => Grid.GetRow(p) == rowI + 1 && Grid.GetColumn(p) == j).CurrentFigure)
+                if (gameGrid.Children.Cast<GameButton>().First(p => Grid.GetRow(p) == rowI && Grid.GetColumn(p) == j).CurrentFigure.Item2 ==
+                    gameGrid.Children.Cast<GameButton>().First(p => Grid.GetRow(p) == rowI + 1 && Grid.GetColumn(p) == j).CurrentFigure.Item2)
                 {
                     if (tempMatchCoords.Count == 0)
                     {
