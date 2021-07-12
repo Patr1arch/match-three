@@ -234,20 +234,14 @@ namespace TestTaskGF
                         var lineEls = tempMatchCoords.ToList().FindAll
                             (p => GetGameButton(p).CurrentFigure.Item1 == Figure.F6GorLine);
                         foreach (var lineEl in lineEls)
-                            for (int k = 0; k < CELLSCOUNT; k++)
-                            {
-                                matchCoords.Add(new Tuple<int, int, int>(lineEl.Item1, k, 0));
-                            }
+                            matchCoords.UnionWith(GetReaction(lineEl, Figure.F6GorLine));
                     }
                     if (tempMatchCoords.Any(p => GetGameButton(p).CurrentFigure.Item1 == Figure.F7VerLine))
                     {
                         var colEls = tempMatchCoords.ToList().FindAll
                             (p => GetGameButton(p).CurrentFigure.Item1 == Figure.F7VerLine);
                         foreach (var colEl in colEls)
-                            for (int k = 0; k < CELLSCOUNT; k++)
-                            {
-                                matchCoords.Add(new Tuple<int, int, int>(k, colEl.Item2, 0));
-                            }
+                            matchCoords.UnionWith(GetReaction(colEl, Figure.F7VerLine));
                     }
                     if (tempMatchCoords.Count == MATCHCOUNTFORLINE)
                     {
@@ -323,19 +317,14 @@ namespace TestTaskGF
                         var lineEls = tempMatchCoords.ToList().FindAll
                             (p => GetGameButton(p).CurrentFigure.Item1 == Figure.F6GorLine);
                         foreach (var lineEl in lineEls)
-                            for (int k = 0; k < CELLSCOUNT; k++)
-                            {
-                                matchCoords.Add(new Tuple<int, int, int>(lineEl.Item1, k, 0));
-                            }
+                            matchCoords.UnionWith(GetReaction(lineEl, Figure.F6GorLine));
                     }
                     if (tempMatchCoords.Any(p => GetGameButton(p).CurrentFigure.Item1 == Figure.F7VerLine))
                     {
-                        var colEl = tempMatchCoords.First
+                        var colEls = tempMatchCoords.ToList().FindAll
                             (p => GetGameButton(p).CurrentFigure.Item1 == Figure.F7VerLine);
-                        for (int k = 0; k < CELLSCOUNT; k++)
-                        {
-                            matchCoords.Add(new Tuple<int, int, int>(k, colEl.Item2, 0));
-                        }
+                        foreach (var colEl in colEls)
+                            matchCoords.UnionWith(GetReaction(colEl, Figure.F7VerLine));
                     }
                     if (tempMatchCoords.Count == MATCHCOUNTFORLINE)
                     {
@@ -394,6 +383,40 @@ namespace TestTaskGF
                 else tempMatchCoords.Clear();
             }
             return matchCoords;
+        }
+
+        private IEnumerable<Tuple<int, int, int>> GetReaction(Tuple<int, int> lineEl, Figure figure)
+        {
+            HashSet<Tuple<int, int, int>> cont = new HashSet<Tuple<int, int, int>>();
+            switch (figure)
+            {
+                case Figure.F6GorLine:
+                    for (int k = 0; k < CELLSCOUNT; k++)
+                    {
+                        var fig = GetGameButton(new Tuple<int, int>(lineEl.Item1, k));
+                        if ((fig.CurrentFigure.Item1 == Figure.F8Bomb
+                            || fig.CurrentFigure.Item1 == Figure.F7VerLine) && k != lineEl.Item2)
+                            cont.UnionWith(GetReaction(new Tuple<int, int>(lineEl.Item1, k), 
+                                fig.CurrentFigure.Item1));
+                        else
+                            cont.Add(new Tuple<int, int, int>(lineEl.Item1, k, 0));
+                    }
+                    break;
+                case Figure.F7VerLine:
+                    for (int k = 0; k < CELLSCOUNT; k++)
+                    {
+                        var fig = GetGameButton(new Tuple<int, int>(k, lineEl.Item2));
+                        if ((fig.CurrentFigure.Item1 == Figure.F8Bomb
+                            || fig.CurrentFigure.Item1 == Figure.F7VerLine) && k != lineEl.Item1)
+                            cont.UnionWith(GetReaction(new Tuple<int, int>(k, lineEl.Item2), 
+                                fig.CurrentFigure.Item1));
+                        else
+                            cont.Add(new Tuple<int, int, int>(k, lineEl.Item2, 0));
+                    }
+                    break;
+            }
+
+            return cont;
         }
 
         private HashSet<Tuple<int, int, int>> CheckAllLines(Tuple<int, int> newSelectedPos = null)
