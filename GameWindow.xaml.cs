@@ -398,7 +398,10 @@ namespace TestTaskGF
                     }
                     foreach (var el in tempMatchCoords)
                     {
-                        matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2, 0)); 
+                        if (matchCoords.Contains(new Tuple<int, int, int>(el.Item1, el.Item2, 0)))
+                            matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2, (int) Figure.F8Bomb));
+                        else 
+                            matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2, 0)); 
                     }
                     tempMatchCoords.Clear();
                 }
