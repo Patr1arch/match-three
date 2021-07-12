@@ -110,7 +110,29 @@ namespace TestTaskGF
                     Grid.SetRow(btn, i);
                     Grid.SetColumn(btn, j);
                     btn.Click += Button_Click;
+                    btn.PreviewMouseDoubleClick += Button_PreviewMouseDown;
                     gameGrid.Children.Add(btn);
+                }
+            }
+        }
+        
+        private void Button_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                var btn = GetGameButton(new Tuple<int, int>(Grid.GetRow((GameButton)sender),
+                        Grid.GetColumn((GameButton)sender)));
+                int index = Array.IndexOf(Enum.GetValues(btn.CurrentFigure.Item1.GetType()), btn.CurrentFigure.Item1);
+                if (index < Enum.GetValues(typeof(FigureColor)).Length - 1)
+                    btn.CurrentFigure = CreateFigure(index + 1, index + 1);
+                else
+                {
+                    if (index == Enum.GetValues(typeof(Figure)).Length - 1)
+                        btn.CurrentFigure = CreateFigure(0, 0);
+                    else
+                        btn.CurrentFigure = CreateFigure(index + 1, 
+                            Array.IndexOf(Enum.GetValues(btn.CurrentFigure.Item2.GetType()),
+                                    btn.CurrentFigure.Item2));
                 }
             }
         }
@@ -209,21 +231,23 @@ namespace TestTaskGF
                 {
                     if (tempMatchCoords.Any(p => GetGameButton(p).CurrentFigure.Item1 == Figure.F6GorLine))
                     {
-                        var lineEl = tempMatchCoords.First
+                        var lineEls = tempMatchCoords.ToList().FindAll
                             (p => GetGameButton(p).CurrentFigure.Item1 == Figure.F6GorLine);
-                        for (int k = 0; k < CELLSCOUNT; k++)
-                        {
-                            matchCoords.Add(new Tuple<int, int, int>(lineEl.Item1, k, 0));
-                        }
+                        foreach (var lineEl in lineEls)
+                            for (int k = 0; k < CELLSCOUNT; k++)
+                            {
+                                matchCoords.Add(new Tuple<int, int, int>(lineEl.Item1, k, 0));
+                            }
                     }
                     if (tempMatchCoords.Any(p => GetGameButton(p).CurrentFigure.Item1 == Figure.F7VerLine))
                     {
-                        var colEl = tempMatchCoords.First
+                        var colEls = tempMatchCoords.ToList().FindAll
                             (p => GetGameButton(p).CurrentFigure.Item1 == Figure.F7VerLine);
-                        for (int k = 0; k < CELLSCOUNT; k++)
-                        {
-                            matchCoords.Add(new Tuple<int, int, int>(k, colEl.Item2, 0));
-                        }
+                        foreach (var colEl in colEls)
+                            for (int k = 0; k < CELLSCOUNT; k++)
+                            {
+                                matchCoords.Add(new Tuple<int, int, int>(k, colEl.Item2, 0));
+                            }
                     }
                     if (tempMatchCoords.Count == MATCHCOUNTFORLINE)
                     {
@@ -282,12 +306,13 @@ namespace TestTaskGF
                 {
                     if (tempMatchCoords.Any(p => GetGameButton(p).CurrentFigure.Item1 == Figure.F6GorLine))
                     {
-                        var lineEl = tempMatchCoords.First
+                        var lineEls = tempMatchCoords.ToList().FindAll
                             (p => GetGameButton(p).CurrentFigure.Item1 == Figure.F6GorLine);
-                        for (int k = 0; k < CELLSCOUNT; k++)
-                        {
-                            matchCoords.Add(new Tuple<int, int, int>(lineEl.Item1, k, 0));
-                        }
+                        foreach (var lineEl in lineEls)
+                            for (int k = 0; k < CELLSCOUNT; k++)
+                            {
+                                matchCoords.Add(new Tuple<int, int, int>(lineEl.Item1, k, 0));
+                            }
                     }
                     if (tempMatchCoords.Any(p => GetGameButton(p).CurrentFigure.Item1 == Figure.F7VerLine))
                     {
