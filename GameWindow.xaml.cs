@@ -29,6 +29,7 @@ namespace TestTaskGF
         const int CELLSCOUNT = 8;
         const int MINMATCHCOUNT = 3;
         private const int MATCHCOUNTFORLINE = 4;
+        private const int MATCHCOUNTFORBOMB = 5;
         const int STARTTIME = 600;
         const int MAXNICKNAMELENGTH = 16;
         Random rand;
@@ -240,8 +241,26 @@ namespace TestTaskGF
                             tempMatchCoords.Remove(el);
                         }
                     }
+                    else if (tempMatchCoords.Count >= MATCHCOUNTFORBOMB)
+                    {
+                        if (tempMatchCoords.Contains(newSelectedPos))
+                        {
+                            matchCoords.Add(new Tuple<int, int, int>(newSelectedPos.Item1, newSelectedPos.Item2,
+                                (int) Figure.F8Bomb));
+                            tempMatchCoords.Remove(newSelectedPos);
+                        }
+                        else
+                        {
+                            var el = tempMatchCoords.ToArray()[tempMatchCoords.Count - 1];
+                            matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2,
+                                (int) Figure.F8Bomb));
+                            tempMatchCoords.Remove(el);
+                        }
+                    }
                     foreach (var el in tempMatchCoords)
-                        matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2, 0));
+                    {
+                        matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2, 0));   
+                    }
                     tempMatchCoords.Clear();
                 }
                 else tempMatchCoords.Clear();
@@ -295,8 +314,26 @@ namespace TestTaskGF
                             tempMatchCoords.Remove(el);
                         }
                     }
+                    else if (tempMatchCoords.Count >= MATCHCOUNTFORBOMB)
+                    {
+                        if (tempMatchCoords.Contains(newSelectedPos))
+                        {
+                            matchCoords.Add(new Tuple<int, int, int>(newSelectedPos.Item1, newSelectedPos.Item2,
+                                (int) Figure.F8Bomb));
+                            tempMatchCoords.Remove(newSelectedPos);
+                        }
+                        else
+                        {
+                            var el = tempMatchCoords.ToArray()[tempMatchCoords.Count - 1];
+                            matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2,
+                                (int) Figure.F8Bomb));
+                            tempMatchCoords.Remove(el);
+                        }
+                    }
                     foreach (var el in tempMatchCoords)
-                        matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2, 0));
+                    {
+                        matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2, 0)); 
+                    }
                     tempMatchCoords.Clear();
                 }
                 else tempMatchCoords.Clear();
@@ -311,7 +348,7 @@ namespace TestTaskGF
             {
                 foreach(var el in CheckLines(i, i, newSelectedPos))
                 {
-                    matchCoords.Add(el);
+                    matchCoords.Add(el);   
                 }
             }
             return matchCoords;

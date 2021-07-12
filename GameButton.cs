@@ -22,7 +22,8 @@ namespace TestTaskGF
         F4Cicle = '\u25CF',
         F5Star = '\u2605',
         F6GorLine = '\u2583',
-        F7VerLine = '\u258D'
+        F7VerLine = '\u258D',
+        F8Bomb = '\u2604'
     }
     class GameButton : Button
     {
