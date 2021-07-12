@@ -398,15 +398,29 @@ namespace TestTaskGF
 
         private HashSet<Tuple<int, int, int>> CheckAllLines(Tuple<int, int> newSelectedPos = null)
         {
-            HashSet<Tuple<int, int, int>> matchCoords = new HashSet<Tuple<int, int, int>>();
+            HashSet<Tuple<int, int>> matchCoords = new HashSet<Tuple<int, int>>();
+            HashSet<Tuple<int, int, int>> matchFigures = new HashSet<Tuple<int, int, int>>();
             for (int i = 0; i < CELLSCOUNT; i++)
             {
                 foreach(var el in CheckLines(i, i, newSelectedPos))
                 {
-                    matchCoords.Add(el);   
+                    var pair = new Tuple<int, int>(el.Item1, el.Item2);
+                    if (matchCoords.Contains(pair))
+                    {
+                        matchFigures.Remove(matchFigures.First(p => p.Item1 == pair.Item1 &&
+                                                                    p.Item2 == pair.Item2));
+                        matchFigures.Add(new Tuple<int, int, int>(pair.Item1, pair.Item2, (int) Figure.F8Bomb));
+                        matchCoords.Remove(pair);
+                    }
+                    else
+                    {
+                        matchFigures.Add(el);
+                        matchCoords.Add(pair);
+                    }
+                        
                 }
             }
-            return matchCoords;
+            return matchFigures;
         }
 
         private void GameWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
