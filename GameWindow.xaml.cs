@@ -32,6 +32,7 @@ namespace TestTaskGF
         private const int MATCHCOUNTFORBOMB = 5;
         const int STARTTIME = 600;
         const int MAXNICKNAMELENGTH = 16;
+        private const int BOMBEXPLOSIONSIZE = 3;
         Random rand;
         Tuple<int, int> selectedPos;
         int points;
@@ -243,6 +244,13 @@ namespace TestTaskGF
                         foreach (var colEl in colEls)
                             matchCoords.UnionWith(GetReaction(colEl, Figure.F7VerLine));
                     }
+                    if (tempMatchCoords.Any(p => GetGameButton(p).CurrentFigure.Item1 == Figure.F8Bomb))
+                    {
+                        var bombEls = tempMatchCoords.ToList().FindAll
+                            (p => GetGameButton(p).CurrentFigure.Item1 == Figure.F8Bomb);
+                        foreach (var bombEl in bombEls)
+                            matchCoords.UnionWith(GetReaction(bombEl, Figure.F8Bomb));
+                    }
                     if (tempMatchCoords.Count == MATCHCOUNTFORLINE)
                     {
                         if (tempMatchCoords.Contains(newSelectedPos))
@@ -325,6 +333,13 @@ namespace TestTaskGF
                             (p => GetGameButton(p).CurrentFigure.Item1 == Figure.F7VerLine);
                         foreach (var colEl in colEls)
                             matchCoords.UnionWith(GetReaction(colEl, Figure.F7VerLine));
+                    }
+                    if (tempMatchCoords.Any(p => GetGameButton(p).CurrentFigure.Item1 == Figure.F8Bomb))
+                    {
+                        var bombEls = tempMatchCoords.ToList().FindAll
+                            (p => GetGameButton(p).CurrentFigure.Item1 == Figure.F8Bomb);
+                        foreach (var bombEl in bombEls)
+                            matchCoords.UnionWith(GetReaction(bombEl, Figure.F8Bomb));
                     }
                     if (tempMatchCoords.Count == MATCHCOUNTFORLINE)
                     {
@@ -412,6 +427,27 @@ namespace TestTaskGF
                                 fig.CurrentFigure.Item1));
                         else
                             cont.Add(new Tuple<int, int, int>(k, lineEl.Item2, 0));
+                    }
+                    break;
+                case Figure.F8Bomb:
+                    for (int i = -1; i < BOMBEXPLOSIONSIZE - 1; i++)
+                    {
+                        for (int j = -1 ; j < BOMBEXPLOSIONSIZE - 1; j++)
+                        {
+                            if (lineEl.Item1 + i > 0 && lineEl.Item1 + i < CELLSCOUNT &&
+                                lineEl.Item2 + j > 0 && lineEl.Item2 + j < CELLSCOUNT)
+                            {
+                                var fig = GetGameButton(new Tuple<int, int>(lineEl.Item1 + i,
+                                    lineEl.Item2 + j));
+                                if ((fig.CurrentFigure.Item1 == Figure.F8Bomb ||
+                                     fig.CurrentFigure.Item1 == Figure.F6GorLine ||
+                                     fig.CurrentFigure.Item1 == Figure.F7VerLine) && (i != 0 && j != 0))
+                                    cont.UnionWith(GetReaction(new Tuple<int, int>(
+                                        lineEl.Item1 + i, lineEl.Item2 + j), fig.CurrentFigure.Item1));
+                                else
+                                    cont.Add(new Tuple<int, int, int>(lineEl.Item1 + i, lineEl.Item2 + j, 0));
+                            }
+                        }
                     }
                     break;
             }
