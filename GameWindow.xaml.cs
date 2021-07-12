@@ -35,6 +35,7 @@ namespace TestTaskGF
         private const int BOMBEXPLOSIONSIZE = 3;
         private bool isDebug;
         private List<Tuple<int, int>> usedBonuses = new List<Tuple<int, int>>();
+        private List<Tuple<int, int>> blowElements = new List<Tuple<int, int>>();
         Random rand;
         Tuple<int, int> selectedPos;
         int points;
@@ -185,7 +186,7 @@ namespace TestTaskGF
                         GetGameButton(new Tuple<int, int>(el.Item1, el.Item2)).Background = Brushes.Red;
                     }
                     SystemSounds.Beep.Play();
-                    await Task.Delay(2000);
+                    await Task.Delay(isDebug ? 4000 : 500);
                     foreach (var el in matchCoords)
                     {
                         GetGameButton(new Tuple<int, int>(el.Item1, el.Item2)).Background = Brushes.Bisque;
@@ -403,8 +404,12 @@ namespace TestTaskGF
                     }
                     foreach (var el in tempMatchCoords)
                     {
-                        if (matchCoords.Contains(new Tuple<int, int, int>(el.Item1, el.Item2, 0)))
-                            matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2, (int) Figure.F8Bomb));
+                        if (matchCoords.Contains(new Tuple<int, int, int>(el.Item1, el.Item2, 0)) &&
+                            !blowElements.Contains(el))
+                        {
+                            matchCoords.Remove(new Tuple<int, int, int>(el.Item1, el.Item2, 0));
+                            matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2, (int) Figure.F8Bomb));    
+                        }
                         else 
                             matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2, 0)); 
                     }
@@ -419,6 +424,7 @@ namespace TestTaskGF
         {
             HashSet<Tuple<int, int, int>> cont = new HashSet<Tuple<int, int, int>>();
             usedBonuses.Add(lineEl);
+            blowElements.Add(lineEl);
             switch (figure)
             {
                 case Figure.F6GorLine:
@@ -431,7 +437,10 @@ namespace TestTaskGF
                             cont.UnionWith(GetReaction(new Tuple<int, int>(lineEl.Item1, k), 
                                 fig.CurrentFigure.Item1));
                         else
+                        {
                             cont.Add(new Tuple<int, int, int>(lineEl.Item1, k, 0));
+                            blowElements.Add(new Tuple<int, int>(lineEl.Item1, k));
+                        }
                     }
                     break;
                 case Figure.F7VerLine:
@@ -444,7 +453,10 @@ namespace TestTaskGF
                             cont.UnionWith(GetReaction(new Tuple<int, int>(k, lineEl.Item2), 
                                 fig.CurrentFigure.Item1));
                         else
+                        {
                             cont.Add(new Tuple<int, int, int>(k, lineEl.Item2, 0));
+                            blowElements.Add(new Tuple<int, int>(k, lineEl.Item2));
+                        }
                     }
                     break;
                 case Figure.F8Bomb:
@@ -452,8 +464,8 @@ namespace TestTaskGF
                     {
                         for (int j = -1 ; j < BOMBEXPLOSIONSIZE - 1; j++)
                         {
-                            if (lineEl.Item1 + i > 0 && lineEl.Item1 + i < CELLSCOUNT &&
-                                lineEl.Item2 + j > 0 && lineEl.Item2 + j < CELLSCOUNT)
+                            if (lineEl.Item1 + i >= 0 && lineEl.Item1 + i < CELLSCOUNT &&
+                                lineEl.Item2 + j >= 0 && lineEl.Item2 + j < CELLSCOUNT)
                             {
                                 var fig = GetGameButton(new Tuple<int, int>(lineEl.Item1 + i,
                                     lineEl.Item2 + j));
@@ -464,7 +476,10 @@ namespace TestTaskGF
                                     cont.UnionWith(GetReaction(new Tuple<int, int>(
                                         lineEl.Item1 + i, lineEl.Item2 + j), fig.CurrentFigure.Item1));
                                 else
+                                {
                                     cont.Add(new Tuple<int, int, int>(lineEl.Item1 + i, lineEl.Item2 + j, 0));
+                                    blowElements.Add(new Tuple<int, int>(lineEl.Item1 + i, lineEl.Item2 + j));
+                                }
                             }
                         }
                     }
@@ -483,7 +498,7 @@ namespace TestTaskGF
                 foreach(var el in CheckLines(i, i, newSelectedPos))
                 {
                     var pair = new Tuple<int, int>(el.Item1, el.Item2);
-                    if (matchCoords.Contains(pair))
+                    if (matchCoords.Contains(pair) && !blowElements.Contains(pair))
                     {
                         matchFigures.Remove(matchFigures.First(p => p.Item1 == pair.Item1 &&
                                                                     p.Item2 == pair.Item2));
@@ -498,6 +513,7 @@ namespace TestTaskGF
                         
                 }
             }
+            blowElements.Clear();
             return matchFigures;
         }
 
