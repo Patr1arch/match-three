@@ -253,6 +253,10 @@ namespace TestTaskGF
                     {
                         if (tempMatchCoords.Contains(newSelectedPos))
                         {
+                            if (matchCoords.Contains(new Tuple<int, int, int>(newSelectedPos.Item1,
+                                newSelectedPos.Item2, 0)))
+                                matchCoords.Remove(new Tuple<int, int, int>(newSelectedPos.Item1, newSelectedPos.Item2,
+                                    0));
                             matchCoords.Add(new Tuple<int, int, int>(newSelectedPos.Item1, newSelectedPos.Item2,
                                 (int) Figure.F6GorLine));
                             tempMatchCoords.Remove(newSelectedPos);
@@ -260,6 +264,9 @@ namespace TestTaskGF
                         else
                         {
                             var el = tempMatchCoords.ToArray()[tempMatchCoords.Count - 1];
+                            if (matchCoords.Contains(new Tuple<int, int, int>(el.Item1, el.Item2, 0)))
+                                matchCoords.Remove(new Tuple<int, int, int>(el.Item1,
+                                    el.Item2, 0));
                             matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2,
                                 (int) Figure.F6GorLine));
                             tempMatchCoords.Remove(el);
@@ -269,6 +276,10 @@ namespace TestTaskGF
                     {
                         if (tempMatchCoords.Contains(newSelectedPos))
                         {
+                            if (matchCoords.Contains(new Tuple<int, int, int>(newSelectedPos.Item1,
+                                newSelectedPos.Item2, 0)))
+                                matchCoords.Remove(new Tuple<int, int, int>(newSelectedPos.Item1, newSelectedPos.Item2,
+                                    0));
                             matchCoords.Add(new Tuple<int, int, int>(newSelectedPos.Item1, newSelectedPos.Item2,
                                 (int) Figure.F8Bomb));
                             tempMatchCoords.Remove(newSelectedPos);
@@ -276,6 +287,9 @@ namespace TestTaskGF
                         else
                         {
                             var el = tempMatchCoords.ToArray()[tempMatchCoords.Count - 1];
+                            if (matchCoords.Contains(new Tuple<int, int, int>(el.Item1, el.Item2, 0)))
+                                matchCoords.Remove(new Tuple<int, int, int>(el.Item1,
+                                    el.Item2, 0));
                             matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2,
                                 (int) Figure.F8Bomb));
                             tempMatchCoords.Remove(el);
@@ -327,6 +341,10 @@ namespace TestTaskGF
                     {
                         if (tempMatchCoords.Contains(newSelectedPos))
                         {
+                            if (matchCoords.Contains(new Tuple<int, int, int>(newSelectedPos.Item1,
+                                newSelectedPos.Item2, 0)))
+                                matchCoords.Remove(new Tuple<int, int, int>(newSelectedPos.Item1, newSelectedPos.Item2,
+                                    0));
                             matchCoords.Add(new Tuple<int, int, int>(newSelectedPos.Item1, newSelectedPos.Item2,
                                 (int) Figure.F7VerLine));
                             tempMatchCoords.Remove(newSelectedPos);
@@ -334,6 +352,10 @@ namespace TestTaskGF
                         else
                         {
                             var el = tempMatchCoords.ToArray()[tempMatchCoords.Count - 1];
+                            if (matchCoords.Contains(new Tuple<int, int, int>(el.Item1,
+                                el.Item2, 0)))
+                                matchCoords.Remove(new Tuple<int, int, int>(el.Item1, el.Item2,
+                                    0));
                             matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2,
                                 (int) Figure.F7VerLine));
                             tempMatchCoords.Remove(el);
@@ -343,6 +365,10 @@ namespace TestTaskGF
                     {
                         if (tempMatchCoords.Contains(newSelectedPos))
                         {
+                            if (matchCoords.Contains(new Tuple<int, int, int>(newSelectedPos.Item1,
+                                newSelectedPos.Item2, 0)))
+                                matchCoords.Remove(new Tuple<int, int, int>(newSelectedPos.Item1, newSelectedPos.Item2,
+                                    0));
                             matchCoords.Add(new Tuple<int, int, int>(newSelectedPos.Item1, newSelectedPos.Item2,
                                 (int) Figure.F8Bomb));
                             tempMatchCoords.Remove(newSelectedPos);
@@ -350,6 +376,10 @@ namespace TestTaskGF
                         else
                         {
                             var el = tempMatchCoords.ToArray()[tempMatchCoords.Count - 1];
+                            if (matchCoords.Contains(new Tuple<int, int, int>(el.Item1,
+                                el.Item2, 0)))
+                                matchCoords.Remove(new Tuple<int, int, int>(el.Item1, el.Item2,
+                                    0));
                             matchCoords.Add(new Tuple<int, int, int>(el.Item1, el.Item2,
                                 (int) Figure.F8Bomb));
                             tempMatchCoords.Remove(el);
