@@ -10,5 +10,6 @@
     <Grid>
         <Button Content="Play" HorizontalAlignment="Center" Width="100" Height="40" Click="Start_Game" VerticalAlignment="Center"/>
         <Button Click="Button_Click" Content="Leaderboard" HorizontalAlignment="Center" Width="100" Height="40" VerticalAlignment="Center" Margin="0 125 0 0"></Button>
+        <Button Click="Start_Game" Content="Debug Mode" HorizontalAlignment="Center" Width="100" Height="40" VerticalAlignment="Center" Margin="0 250 0 0"></Button>
     </Grid>
 </Window>

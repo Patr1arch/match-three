@@ -30,20 +30,24 @@ namespace TestTaskGF
         const int MINMATCHCOUNT = 3;
         private const int MATCHCOUNTFORLINE = 4;
         private const int MATCHCOUNTFORBOMB = 5;
-        const int STARTTIME = 600;
+        const int STARTTIME = 60;
         const int MAXNICKNAMELENGTH = 16;
         private const int BOMBEXPLOSIONSIZE = 3;
+        private bool isDebug;
         private List<Tuple<int, int>> usedBonuses = new List<Tuple<int, int>>();
         Random rand;
         Tuple<int, int> selectedPos;
         int points;
-        int timeRemain = STARTTIME;
+        private int timeRemain = STARTTIME;
         private static SemaphoreSlim slowStuffSemaphore = new SemaphoreSlim(1, 1);
         DispatcherTimer dispatcherTimer;
 
 
-        public GameWindow()
+        public GameWindow(bool isDebug)
         {
+            this.isDebug = isDebug;
+            if (this.isDebug)
+                timeRemain *= 100;
             InitializeComponent();
             ConfigureGame();         
         }
@@ -112,7 +116,8 @@ namespace TestTaskGF
                     Grid.SetRow(btn, i);
                     Grid.SetColumn(btn, j);
                     btn.Click += Button_Click;
-                    btn.PreviewMouseDoubleClick += Button_PreviewMouseDown;
+                    if (isDebug)
+                        btn.PreviewMouseDoubleClick += Button_PreviewMouseDown;
                     gameGrid.Children.Add(btn);
                 }
             }

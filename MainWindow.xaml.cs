@@ -27,7 +27,7 @@ namespace TestTaskGF
 
         private void Start_Game(object sender, RoutedEventArgs e)
         {
-            GameWindow gameWindow = new GameWindow();
+            GameWindow gameWindow = new GameWindow((string)((Button)sender).Content != "Play");
             this.Visibility = Visibility.Collapsed;
             gameWindow.Owner = this;
             gameWindow.Show();
