@@ -407,7 +407,7 @@ namespace TestTaskGF
                     {
                         var fig = GetGameButton(new Tuple<int, int>(k, lineEl.Item2));
                         if ((fig.CurrentFigure.Item1 == Figure.F8Bomb
-                            || fig.CurrentFigure.Item1 == Figure.F7VerLine) && k != lineEl.Item1)
+                            || fig.CurrentFigure.Item1 == Figure.F6GorLine) && k != lineEl.Item1)
                             cont.UnionWith(GetReaction(new Tuple<int, int>(k, lineEl.Item2), 
                                 fig.CurrentFigure.Item1));
                         else
